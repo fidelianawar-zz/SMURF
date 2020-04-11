@@ -569,3 +569,4 @@ these reveal no problems, that adds another 10%
 
 No. I'll try to put you on track as I grade. I'll also provide a reference
 implementation for weeks 1 and 2 that you can use to replace your own code.
+# SMURF
