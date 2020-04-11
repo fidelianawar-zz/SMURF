@@ -12,7 +12,7 @@ primary
   
  
 integer
-  = sign:("+"/"-") right:digits
+  = sign:('+' / '-') right:digits
 	{ return (sign == '+' ? digits : -digits); } /digits
 
 digits
