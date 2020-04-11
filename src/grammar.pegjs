@@ -8,8 +8,7 @@ mult_term
 
 primary
   = _ left:"(" _ options:arithmetic_expression right:")" _
-  {return options;}
-  / integer
+  { return options; } / integer
   
  
 integer
@@ -18,15 +17,15 @@ integer
 
 digits
   = digits:[0-9]*
-  {return parseInt(digits.join(""), 10);}
+  { return parseInt(digits.join(""), 10); }
   
 addop
   = op:("+" / "-")
-  {return op;}
+  { return op; }
   
 mulop
   = op:("*" / "/")
-  {return op;}
+  { return op; }
   
 eol   
 	= [\n\r\u2028\u2029]  
