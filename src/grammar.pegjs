@@ -28,14 +28,14 @@ mulop
   { return op; }
   
 eol   
-	= [\n\r\u2028\u2029]  
+  = [\n\r\u2028\u2029]  
 
 space   
-	= [ \t] / eol 
+  = [ \t] / eol 
 
 comment   
-	= "#" (!eol .)* 
+  = "#" (!eol .)* 
 _ 
-	= (space / comment)* 
+  = (space / comment)* 
 __    
-	= (space / comment)+
+  = (space / comment)+
