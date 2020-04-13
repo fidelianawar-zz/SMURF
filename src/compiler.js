@@ -27,31 +27,30 @@
 //   a version that the tests use so I can capture output.
 
 //update to call pegjs and that will parse the input passed and output the array thing
-export default function compileAndRun(grammar, script, printFunction) {
 
-  console.log("script is ", script)
-  let result = grammar.parse(script)
-  console.log("result = ", result)
-  
+import * as AST from "./ast.js"
 
-  let ast = parser.parse(process.argv[2], { AST: AST }) 
-  let interpreter =new Interpreter() 
-  let result = interpreter.visit(ast) 
-  console.log("=", result)
-  
+export default function compileAndRun(parser, script, printFunction) {
+
+  let ast = parser.parse(process.argv[2], { AST: AST })
+  console.log("AST", ast)
+  // let interpreter =new Interpreter()
+  // let result = interpreter.visit(ast)
+  //console.log("=", result)
+
   return // ... the value returned by executing the SMURF script
 }
 
 
 
-// { const AST = options.AST } 
+// { const AST = options.AST }
 
 // import fs from "fs"
 // import PEGJS from "pegjs"
 // import {inspect} from "util"
 // import * as AST from"./ast1.js"
 
-// const grammar = fs.readFileSync("expr_ast.pegjs", "utf-8") 
-// const parser  = PEGJS.generate(grammar) 
-// let result = parser.parse(process.argv[2], { AST: AST }) 
+// const grammar = fs.readFileSync("expr_ast.pegjs", "utf-8")
+// const parser  = PEGJS.generate(grammar)
+// let result = parser.parse(process.argv[2], { AST: AST })
 // console.log(inspect(result, null, 5, true))
