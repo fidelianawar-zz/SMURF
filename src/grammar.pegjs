@@ -8,7 +8,7 @@ arithmetic_expression
 
 mult_term
   = _ left:primary _ op:mulop _ right:mult_term _
-    { return  .....BinOp..... }
+    { return  "binop stuff" }
   / primary
 
 primary

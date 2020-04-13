@@ -28,15 +28,16 @@
 
 //update to call pegjs and that will parse the input passed and output the array thing
 
+import Interpreter from "./interpreter.js"
 import * as AST from "./ast.js"
 
 export default function compileAndRun(parser, script, printFunction) {
 
   let ast = parser.parse(process.argv[2], { AST: AST })
   console.log("AST", ast)
-  // let interpreter =new Interpreter()
-  // let result = interpreter.visit(ast)
-  //console.log("=", result)
+  let interpreter =new Interpreter()
+  let result = interpreter.visit(ast)
+  console.log("=", result)
 
   return // ... the value returned by executing the SMURF script
 }
