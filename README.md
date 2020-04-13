@@ -310,12 +310,10 @@ boolean_expression
 //////////////////// arithmetic expression /////////////////////////////
 
 arithmetic_expression
-  = mult_term addop arithmetic_expression
-  | mult_term
+  = mult_term (addop mult_term)*
 
 mult_term
-  = primary mulop mult_term
-  | primary
+  = primary (mulop primary)*
 
 primary
   = integer
@@ -569,4 +567,3 @@ these reveal no problems, that adds another 10%
 
 No. I'll try to put you on track as I grade. I'll also provide a reference
 implementation for weeks 1 and 2 that you can use to replace your own code.
-# SMURF
