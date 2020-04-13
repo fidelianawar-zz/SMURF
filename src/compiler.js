@@ -23,25 +23,35 @@
 //   when it executes the SMURF `print` function. You pass it
 //   one or more values to display.
 
-//   The default printFunction simply writes to the console. I also have
+//   The default printFunction si mply writes to the console. I also have
 //   a version that the tests use so I can capture output.
 
 //update to call pegjs and that will parse the input passed and output the array thing
 export default function compileAndRun(grammar, script, printFunction) {
+
   console.log("script is ", script)
   let result = grammar.parse(script)
   console.log("result = ", result)
+  
+
+  let ast = parser.parse(process.argv[2], { AST: AST }) 
+  let interpreter =new Interpreter() 
+  let result = interpreter.visit(ast) 
+  console.log("=", result)
+  
   return // ... the value returned by executing the SMURF script
 }
 
-{ const AST = options.AST } 
 
-import fs from "fs"
-import PEGJS from "pegjs"
-import {inspect} from "util"
-import * as AST from"./ast1.js"
 
-const grammar = fs.readFileSync("expr_ast.pegjs", "utf-8") 
-const parser  = PEGJS.generate(grammar) 
-let result = parser.parse(process.argv[2], { AST: AST }) 
-console.log(inspect(result, null, 5, true))
+// { const AST = options.AST } 
+
+// import fs from "fs"
+// import PEGJS from "pegjs"
+// import {inspect} from "util"
+// import * as AST from"./ast1.js"
+
+// const grammar = fs.readFileSync("expr_ast.pegjs", "utf-8") 
+// const parser  = PEGJS.generate(grammar) 
+// let result = parser.parse(process.argv[2], { AST: AST }) 
+// console.log(inspect(result, null, 5, true))
