@@ -14,7 +14,12 @@ export default class Interpreter {
             case"-":
                 return left - right
             case"/":
-                return left / right
+                if((left%right)==0){
+                    return parseInt((left/right));
+                }
+                else{
+                    return parseInt(left/right)+1;
+                }
         }
     }
     visitInteger(node) {
