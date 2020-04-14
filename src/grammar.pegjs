@@ -15,17 +15,16 @@ mult_term
     { return rest.reduce(
             (result, [op, _, right]) => new AST.BinOp(result, op, right),
             head 
-        )
+    )  
     }
    
 primary
-  = _ left:"(" _ options:arithmetic_expression right:")" _
+  = _ left: "(" _ options:arithmetic_expression right: _ ")" _
     { return options; }
   / integer
 
-
 integer
-  = '-' number:digits
+  = "-" number:digits
     { return new AST.Integer(-number) }
   / "+"? number:digits
     { return new AST.Integer(number) }
@@ -35,22 +34,18 @@ digits
   { return new AST.Integer(parseInt(digits.join(""), 10)); }
 
 addop
-  = op:("+" / "-")
+  = op:( "+" / "-" )
   { return op; }
 
 mulop
-  = op:("*" / "/")
+  = op:(  "*" / "/"  )
   { return op; }
 
 eol
   = [\n\r\u2028\u2029]
 
 space
-  = [ \t] / eol
+  = [ \t\n\r]
 
-comment
-  = "#" (!eol .)*
 _
-  = (space / comment)*
-__
-  = (space / comment)+
+  = (space)*
