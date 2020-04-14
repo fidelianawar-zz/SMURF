@@ -33,13 +33,13 @@ import * as AST from "./ast.js"
 
 export default function compileAndRun(parser, script, printFunction) {
 
-  let ast = parser.parse(process.argv[2], { AST: AST })
+  let ast = parser.parse(script, { AST: AST })
   console.log("AST", ast)
   let interpreter =new Interpreter()
   let result = interpreter.visit(ast)
   console.log("=", result)
 
-  return // ... the value returned by executing the SMURF script
+  return result // ... the value returned by executing the SMURF script
 }
 
 

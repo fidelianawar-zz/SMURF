@@ -3,14 +3,21 @@
 }
 
 arithmetic_expression
-  = _ left:mult_term _ op:addop _ right:arithmetic_expression _
-  { return left + parseInt(op + right); } / mult_term
+  = _ head:mult_term _ rest:(addop _ arithmetic_expression)* _
+    { return rest.reduce(
+            (result, [op, _, right]) => new AST.BinOp(result, op, right),
+            head 
+        )
+    }
 
 mult_term
-  = _ left:primary _ op:mulop _ right:mult_term _
-    { return  "binop stuff" }
-  / primary
-
+  = _ head:primary _ mulop rest:mult_term* _
+    { return rest.reduce(
+            (result, [op, _, right]) => new AST.BinOp(result, op, right),
+            head 
+        )
+    }
+   
 primary
   = _ left:"(" _ options:arithmetic_expression right:")" _
     { return options; }
@@ -25,7 +32,7 @@ integer
 
 digits
   = digits:[0-9]*
-  { return parseInt(digits.join(""), 10); }
+  { return new AST.Integer(parseInt(digits.join(""), 10)); }
 
 addop
   = op:("+" / "-")
