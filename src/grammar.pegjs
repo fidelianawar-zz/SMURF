@@ -3,21 +3,21 @@
 }
 
 arithmetic_expression
-  = _ head:mult_term _ rest:(addop _ arithmetic_expression)* _
+  = _ head:mult_term _ rest:(addop _ mult_term)* _
     { return rest.reduce(
             (result, [op, _, right]) => new AST.BinOp(result, op, right),
-            head 
+            head
         )
     }
 
 mult_term
-  = _ head:primary _ mulop rest:mult_term* _
+  = _ head:primary rest:(_ mulop primary)* _
     { return rest.reduce(
             (result, [op, _, right]) => new AST.BinOp(result, op, right),
-            head 
-    )  
+            head
+    )
     }
-   
+
 primary
   = _ left: "(" _ options:arithmetic_expression right: _ ")" _
     { return options; }
