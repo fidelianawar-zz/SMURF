@@ -15,10 +15,10 @@ export default class Interpreter {
                 return left - right
             case"/":
                 if((left%right)==0){
-                    return parseInt((left/right));
+                    return parseInt((left/right))
                 }
                 else{
-                    return parseInt(left/right)+1;
+                    return parseInt(left/right)+1
                 }
         }
     }
