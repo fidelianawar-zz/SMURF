@@ -45,6 +45,12 @@ const ExpressionsWithWhitespace = [
 const Associativity = [
   "1 - 2 + 3",
   "12 / 4 * 3",
+  "14 * 3 / 24 + 85"
+]
+
+const SubExpressions = [
+  "(1 - 8 / (7-6)*2) + 3",
+  "(16+(23+(14/2+(2*3))))"
 ]
 
 let grammar = loadGrammar()
@@ -64,6 +70,10 @@ test("expressions with whitespace", t => {
 
 test("expressions with left associativity", t => {
   testValues(t, Associativity)
+})
+
+test("expressions with sub expressions", t => {
+  testValues(t, SubExpressions)
 })
 
 function testValues(t, values) {
