@@ -6,18 +6,26 @@ arithmetic_expression
   = _ head:mult_term _ rest:(addop _ mult_term)* _
     { return rest.reduce(
             (result, [op, _, right]) => new AST.BinOp(result, op, right),
-            head 
+            head
         )
     }
 
 mult_term
+<<<<<<< HEAD
   = _ head:primary _ rest:(_ mulop _ primary)* _
     { return rest.reduce(
             (result, [_, op, __, right]) => new AST.BinOp(result, op, right),
             head 
     )  
+=======
+  = _ head:primary rest:(_ mulop primary)* _
+    { return rest.reduce(
+            (result, [op, _, right]) => new AST.BinOp(result, op, right),
+            head
+    )
+>>>>>>> 5ca7d469eae5dfbc906d933e78aa8a14ede10356
     }
-   
+
 primary
   = _ left: "(" _ op:arithmetic_expression right: _ ")" _
     { return op; }
