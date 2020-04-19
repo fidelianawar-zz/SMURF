@@ -16,3 +16,13 @@ export class Integer {
         return visitor.visitInteger(this)   
     } 
 }
+
+export class Assignment { 
+    constructor(l, r) { 
+        this.variable = l
+        this.expr = r   
+    } 
+    accept(visitor) { 
+        return visitor.Assignment(this)   
+    } 
+}

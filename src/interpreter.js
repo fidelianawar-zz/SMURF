@@ -28,7 +28,7 @@ export default class Interpreter {
     Assignment(node){
         let variable = node.variable.accept(this)
         let expr = node.expr.accept(this)
-        setVariable(variable, expr)
+        this.setVariable(variable, expr)
         return expr
     }
 }

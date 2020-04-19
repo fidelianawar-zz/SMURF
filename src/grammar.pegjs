@@ -10,15 +10,21 @@ identifier
 
 variable_declaration
   = _ left:variable_name _ "=" _ right:expr
-  | variable_name
+  / variable_name
 
 variable_value             // as rvalue
-  =  rval:identifier
-  { return rval; }
+  = _ id:identifier _ 
+  { return new AST.VariableValue(id); }
 
 variable_name              // as lvalue
-  =  lval:identifier
-  { return lval; }
+  = _ id:identifier _
+  { return new AST.VariableName(id); }
+
+//////////////////////////////// assignment /////////////////////////////
+
+assignment
+  = l:variable_name _ "=" _ r:expr
+  { return new AST.Assignment(l,r); }
 
 //////////////////// arithmetic expression /////////////////////////////
 
@@ -39,8 +45,8 @@ mult_term
     }
 
 primary
-  = _ left: "(" _ op:arithmetic_expression right: _ ")" _
-    { return op; }
+  = _ left: "(" _ expr:arithmetic_expression right: _ ")" _
+    { return expr; }
   / integer / function_call / variable_value
 
 integer
@@ -68,7 +74,19 @@ relop
 //////////////////////////////// function call /////////////////////////////
 
 function_call
-  = _ variable_value "(" ")"     // note: no parameters
+  = _ rval:variable_value "(" ")"     // note: no parameters
+  { return rval; }
+
+//////////////////////// function definition /////////////////////////////
+
+function_definition
+  = param_list brace_block
+
+param_list
+   = "(" ")"
+
+brace_block
+  = "{" code "}"
 
 //////////////////// spacing /////////////////////////////
 
