@@ -74,13 +74,14 @@ relop
 //////////////////////////////// function call /////////////////////////////
 
 function_call
-  = _ rval:variable_value "(" ")"     // note: no parameters
-  { return rval; }
+  = name:variable_value "(" _ ")"     // note: no parameters
+  { return new AST.FunctionCall(name,args); }
 
 //////////////////////// function definition /////////////////////////////
 
 function_definition
-  = param_list brace_block
+  = params:param_list _ code:brace_block
+  { return new AST.FunctionDefinition(params,code) }
 
 param_list
    = "(" ")"

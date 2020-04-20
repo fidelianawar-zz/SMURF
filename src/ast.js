@@ -26,3 +26,42 @@ export class Assignment {
         return visitor.Assignment(this)   
     } 
 }
+
+export class VariableName {
+    constructor(name) {
+        this.name = name
+    }
+    accept(visitor){
+        return visitor.VariableName(this)
+    }
+}
+
+export class VariableValue {
+    constructor(name) {
+        this.name = name
+    }
+    accept(visitor){
+        return visitor.VariableValue(this)
+    }
+}
+
+export class FunctionDefinition {
+    constructor(name) {
+        this.name = name
+    }
+    accept(visitor){
+        return visitor.VariableValue(this)
+    }
+} 
+//export const FunctionDefinition = makeNode("FunctionDefinition", "formals", "code")
+
+
+export class FunctionCall {
+    constructor(name, args) {
+        this.name = name
+        this.args = args
+    }
+    accept(visitor){
+        return visitor.FunctionCall(this)
+    }
+} 
