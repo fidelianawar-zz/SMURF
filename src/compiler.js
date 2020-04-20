@@ -38,11 +38,8 @@ export default function compileAndRun(parser, script, printFunction) {
   let interpreter =new Interpreter()
   let result = interpreter.visit(ast)
   console.log("=", result)
-
   return result // ... the value returned by executing the SMURF script
 }
-
-
 
 // { const AST = options.AST }
 
