@@ -8,7 +8,7 @@ identifier
 
 //////////////// variables & variable declaration /////////////////////////////
 
-variable_declaration
+variable_declaration //do something with map here?
   = _ left:variable_name _ "=" _ right:expr
   / variable_name
 
@@ -20,11 +20,36 @@ variable_name              // as lvalue
   = _ id:identifier _
   { return new AST.VariableName(id); }
 
+//////////////////////////////// if/then/else /////////////////////////////
+
+if_expression
+  = expr brace_block "else" brace_block
+  / expr brace_block
+
 //////////////////////////////// assignment /////////////////////////////
 
 assignment
   = l:variable_name _ "=" _ r:expr
   { return new AST.Assignment(l,r); }
+
+//////////////////////////////// expression /////////////////////////////
+
+expr
+  = "fn" _ expr:function_definition
+  { return expr; }
+  / "if" _ if_expression
+  / boolean_expression
+  / arithmetic_expression
+
+/////////////////////// boolean expression /////////////////////////////
+
+boolean_expression
+  = _ head:arithmetic_expression rest:(relop _ arithmetic_expression)* _
+    { return rest.reduce(
+        (result, [op, _, right]) => new AST.RelOp(result, op, right),
+        head
+      )
+    }
 
 //////////////////// arithmetic expression /////////////////////////////
 

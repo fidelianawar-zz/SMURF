@@ -8,6 +8,18 @@ export class BinOp {
         return visitor.visitBinOp(this)   
     } 
 } 
+
+export class RelOp { 
+    constructor(l, op, r) { 
+        this.left = l 
+        this.op = op 
+        this.right = r   
+    } 
+    accept(visitor) { 
+        return visitor.visitRelOp(this)   
+    } 
+} 
+
 export class Integer { 
     constructor(value) { 
         this.value = value   
@@ -54,7 +66,6 @@ export class FunctionDefinition {
     }
 } 
 //export const FunctionDefinition = makeNode("FunctionDefinition", "formals", "code")
-
 
 export class FunctionCall {
     constructor(name, args) {

@@ -6,7 +6,6 @@ export default class Interpreter {
     }
 
     visitBinOp(node) {
-
         let left = node.left.accept(this)
         let right = node.right.accept(this)
         switch (node.op) {
@@ -26,12 +25,40 @@ export default class Interpreter {
                 }
         }
     }
+
+    visitRelOp(node) {
+
+        let left = node.left.accept(this)
+        let right = node.right.accept(this)
+
+        switch (node.op) {
+            case"==":
+                if(left == right)
+                    return true
+            case"!=":
+                if(left != right)
+                    return true
+            case"!=":
+                if(left >= right)
+                    return true
+            case">":
+                if(left > right)
+                    return true
+            case"<=":
+                if(left <= right)
+                    return true
+            case"<":
+                if(left < right)
+                    return true
+        }
+    }
     
     visitInteger(node) {
         return node.value
     }
 
     constructor(target, printFunction){
+        this.target = target;
         this.binding = new Map()
     }
 
@@ -60,12 +87,14 @@ export default class Interpreter {
         let lval = name
         this.binding.get(lval)
     }
+
     FunctionDefinition(node){ 
         return node.code
     }
+
     FunctionCall(node){
         let bodyAST = node.name.accept(this)
-        //let argsToPass = ;
+        //let argsToPass = //not passing arguments right now
         return bodyAST.accept(this)
     }
 }
