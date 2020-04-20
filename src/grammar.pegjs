@@ -6,13 +6,26 @@ identifier
   = identifier:[a-z][a-zA-Z_0-9]*
   { return identifier; }
 
+///////////////////////// blocks (lists of statements) /////////////////////////
+
+code
+  = code:(statement)+
+  { return code; }
+
+statement
+  = "let" _ declr: variable_declaration
+  { return new AST.Statement(declr)}
+  / assignment
+  / expr
+
 //////////////// variables & variable declaration /////////////////////////////
 
-variable_declaration //do something with map here?
+//variable declaration, optional parameter: right map.set
+variable_declaration
   = _ left:variable_name _ "=" _ right:expr
   / variable_name
 
-variable_value             // as rvalue
+variable_value             // as rvalue, should not be able to access a variable w/o let
   = _ id:identifier _ 
   { return new AST.VariableValue(id); }
 
@@ -33,6 +46,7 @@ assignment
   { return new AST.Assignment(l,r); }
 
 //////////////////////////////// expression /////////////////////////////
+//func call, defn, if_expression, statemetns
 
 expr
   = "fn" _ expr:function_definition
@@ -110,16 +124,19 @@ function_definition
 
 param_list
    = "(" ")"
+   { return; }
 
 brace_block
-  = "{" code "}"
+  = "{" code:code "}"
+  { return code;}
 
 //////////////////// spacing /////////////////////////////
 
 eol
   = [\n\r\u2028\u2029]
-
 space
   = [ \t\n\r]
 _
   = (space)*
+__
+  = (space)+

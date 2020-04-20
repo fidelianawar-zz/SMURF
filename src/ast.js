@@ -76,3 +76,12 @@ export class FunctionCall {
         return visitor.FunctionCall(this)
     }
 } 
+
+export class Statement {
+    constructor(name) {
+        this.name = name
+    }
+    accept(visitor){
+        return visitor.Statement(this)
+    }
+}

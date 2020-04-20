@@ -9,7 +9,6 @@ export default class Interpreter {
         let left = node.left.accept(this)
         let right = node.right.accept(this)
         switch (node.op) {
-
             case"+":
                 return left + right
             case"*":
@@ -62,7 +61,7 @@ export default class Interpreter {
         this.binding = new Map()
     }
 
-    Assignment(node){
+    Assignment(node){ //check if variable is in binding, if it is someone can't assign to it
         let variable = node.variable.accept(this)
         let expr = node.expr.accept(this)
         this.setVariable(variable, expr)
@@ -96,5 +95,9 @@ export default class Interpreter {
         let bodyAST = node.name.accept(this)
         //let argsToPass = //not passing arguments right now
         return bodyAST.accept(this)
+    }
+
+    Statement(node){
+        return node.name;
     }
 }
