@@ -11,15 +11,15 @@ code
 
 statement
   = "let" _ declr: variable_declaration
-  { return new AST.Statement(declr)}
+  { return new AST.VariableDeclaration(declr)}
   / assignment
   / expr
 
 //////////////// variables & variable declaration /////////////////////////////
 
 variable_declaration
-  = _ left:variable_name _ "=" _ right:expr
-  { return new AST.Assignment(left,right); }
+  = _ predicate:variable_name _ "=" _ right:expr
+  { return new AST.VariableDeclaration(predicate,right); }
   / variable_name
 
 variable_value             // as rvalue, should not be able to access a variable w/o let

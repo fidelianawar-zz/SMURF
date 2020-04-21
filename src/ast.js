@@ -77,15 +77,6 @@ export class FunctionCall {
     }
 }
 
-export class Statement {
-    constructor(name) {
-        this.name = name
-    }
-    accept(visitor){
-        return visitor.Statement(this)
-    }
-}
-
 export class Statements {
     constructor(statements) {
         this.statements = statements
@@ -103,5 +94,15 @@ export class IfStatement {
     }
     accept(visitor){
         return visitor.IfStatement(this)
+    }
+}
+
+export class VariableDeclaration {
+    constructor(predicate, right) {
+        this.predicate = predicate
+        this.right = right
+    }
+    accept(visitor){
+        return visitor.VariableDeclaration(this)
     }
 }
