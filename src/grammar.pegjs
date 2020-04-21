@@ -36,10 +36,10 @@ variable_name              // as lvalue
 //////////////////////////////// if/then/else /////////////////////////////
 
 if_expression
-  = left:expr code:brace_block "else" else:brace_block
+  = left:expr code:brace_block "else" elseBlock:brace_block
   { 
-    console.log("left", left, "code", code, "else", else)
-    return new AST.IfStatement(left, code, else) }
+    console.log("left", left, "code", code, "else", elseBlock)
+    return new AST.IfStatement(left, code, elseBlock) }
   / left:expr code:brace_block
   { return new AST.IfStatement(left, code) }
 
