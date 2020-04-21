@@ -85,3 +85,13 @@ export class Statement {
         return visitor.Statement(this)
     }
 }
+
+export class IfStatement {
+    constructor(left, code) {
+        this.left = left
+        this.code = code
+    }
+    accept(visitor){
+        return visitor.IfStatement(this)
+    }
+}

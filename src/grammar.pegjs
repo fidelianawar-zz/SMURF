@@ -9,7 +9,7 @@ identifier
 ///////////////////////// blocks (lists of statements) /////////////////////////
 
 code
-  = code:(statement)+
+  = code:(statement)
   { return code; }
 
 statement
@@ -20,9 +20,9 @@ statement
 
 //////////////// variables & variable declaration /////////////////////////////
 
-//variable declaration, optional parameter: right map.set
 variable_declaration
   = _ left:variable_name _ "=" _ right:expr
+  { return new AST.Assignment(left,right); }
   / variable_name
 
 variable_value             // as rvalue, should not be able to access a variable w/o let
@@ -36,8 +36,12 @@ variable_name              // as lvalue
 //////////////////////////////// if/then/else /////////////////////////////
 
 if_expression
-  = expr brace_block "else" brace_block
-  / expr brace_block
+  = left:expr code:brace_block "else" else:brace_block
+  { 
+    console.log("left", left, "code", code, "else", else)
+    return new AST.IfStatement(left, code, else) }
+  / left:expr code:brace_block
+  { return new AST.IfStatement(left, code) }
 
 //////////////////////////////// assignment /////////////////////////////
 
@@ -51,7 +55,7 @@ assignment
 expr
   = "fn" _ expr:function_definition
   { return expr; }
-  / "if" _ if_expression
+  / "if" _ ifExpr: if_expression { return ifExpr; }
   / boolean_expression
   / arithmetic_expression
 
@@ -84,7 +88,7 @@ mult_term
     }
 
 primary
-  = _ left: "(" _ expr:arithmetic_expression right: _ ")" _
+  = _ "(" _ expr:arithmetic_expression _ ")" _
     { return expr; }
   / integer / function_call / variable_value
 

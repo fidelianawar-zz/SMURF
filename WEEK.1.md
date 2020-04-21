@@ -57,7 +57,6 @@ Your job is to:
 
 * you can check your progress by running the tests: `npm test`
 
-
 ## Some Suggestions
 
 * Don't Panic. This may seem like a lot, but it has all been covered in the

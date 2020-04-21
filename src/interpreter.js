@@ -50,6 +50,7 @@ export default class Interpreter {
                 if(left < right)
                     return true
         }
+        return false;
     }
     
     visitInteger(node) {
@@ -63,9 +64,14 @@ export default class Interpreter {
 
     Assignment(node){ //check if variable is in binding, if it is someone can't assign to it
         let variable = node.variable.accept(this)
-        let expr = node.expr.accept(this)
-        this.setVariable(variable, expr)
-        return expr
+        if(this.binding.has(variable)){
+            return this.binding.getVariable(variable);
+        }
+        else{
+            let expr = node.expr.accept(this)
+            this.setVariable(variable, expr)
+            return expr
+        }
     }
 
     VariableName(node){
@@ -100,4 +106,10 @@ export default class Interpreter {
     Statement(node){
         return node.name;
     }
+
+    IfStatement(node)
+    {
+        
+    }
+    
 }
