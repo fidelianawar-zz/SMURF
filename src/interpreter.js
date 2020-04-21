@@ -44,25 +44,18 @@ export default class Interpreter {
 
         switch (node.op) {
             case"==":
-                if(left == right)
-                    return true
+                return _bool(left == right)
             case"!=":
-                if(left != right)
-                    return true
-            case"!=":
-                if(left >= right)
-                    return true
+                return _bool(left != right)
             case">":
                 return _bool(left > right)
-
-            case"<=":
-                if(left <= right)
-                    return true
+            case">=":
+                return _bool(left >= right)
             case"<":
-                if(left < right)
-                    return true
+                return _bool(left < right)
+            case"<=":
+                return _bool(left <= right)
         }
-        return false;
     }
 
     visitInteger(node) {
