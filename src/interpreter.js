@@ -1,115 +1,107 @@
-// a Visitor on the AST
-export default class Interpreter {
-
-    visit(ast) {
-        return ast.accept(this)
+export class BinOp {
+    constructor(l, op, r) {
+        this.left = l
+        this.op = op
+        this.right = r
     }
-
-    visitBinOp(node) {
-        let left = node.left.accept(this)
-        let right = node.right.accept(this)
-        switch (node.op) {
-            case"+":
-                return left + right
-            case"*":
-                return left * right
-            case"-":
-                return left - right
-            case"/":
-                if((left%right)==0){
-                    return parseInt((left/right))
-                }
-                else{
-                    return parseInt(left/right)+1
-                }
-        }
+    accept(visitor) {
+        return visitor.visitBinOp(this)
     }
+}
 
-    visitRelOp(node) {
-
-        let left = node.left.accept(this)
-        let right = node.right.accept(this)
-
-        switch (node.op) {
-            case"==":
-                if(left == right)
-                    return true
-            case"!=":
-                if(left != right)
-                    return true
-            case"!=":
-                if(left >= right)
-                    return true
-            case">":
-                if(left > right)
-                    return true
-            case"<=":
-                if(left <= right)
-                    return true
-            case"<":
-                if(left < right)
-                    return true
-        }
-        return false;
+export class RelOp {
+    constructor(l, op, r) {
+        this.left = l
+        this.op = op
+        this.right = r
     }
-    
-    visitInteger(node) {
-        return node.value
+    accept(visitor) {
+        return visitor.visitRelOp(this)
     }
+}
 
-    constructor(target, printFunction){
-        this.target = target;
-        this.binding = new Map()
+export class Integer {
+    constructor(value) {
+        this.value = value
     }
+    accept(visitor) {
+        return visitor.visitInteger(this)
+    }
+}
 
-    Assignment(node){ //check if variable is in binding, if it is someone can't assign to it
-        let variable = node.variable.accept(this)
-        if(this.binding.has(variable)){
-            return this.binding.getVariable(variable);
-        }
-        else{
-            let expr = node.expr.accept(this)
-            this.setVariable(variable, expr)
-            return expr
-        }
+export class Assignment {
+    constructor(l, r) {
+        this.variable = l
+        this.expr = r
     }
+    accept(visitor) {
+        return visitor.Assignment(this)
+    }
+}
 
-    VariableName(node){
-        return node.name
+export class VariableName {
+    constructor(name) {
+        this.name = name
     }
+    accept(visitor){
+        return visitor.VariableName(this)
+    }
+}
 
-    setVariable(name, value){
-        let lval = name
-        let rval = value
-        this.binding.set(lval, rval)
+export class VariableValue {
+    constructor(name) {
+        this.name = name
     }
+    accept(visitor){
+        return visitor.VariableValue(this)
+    }
+}
 
-    VariableValue(node){
-        return this.getVariable(node.name)
+export class FunctionDefinition {
+    constructor(name) {
+        this.name = name
     }
+    accept(visitor){
+        return visitor.VariableValue(this)
+    }
+}
+//export const FunctionDefinition = makeNode("FunctionDefinition", "formals", "code")
 
-    getVariable(name){
-        let lval = name
-        this.binding.get(lval)
+export class FunctionCall {
+    constructor(name, args) {
+        this.name = name
+        this.args = args
     }
+    accept(visitor){
+        return visitor.FunctionCall(this)
+    }
+}
 
-    FunctionDefinition(node){ 
-        return node.code
+export class Statement {
+    constructor(name) {
+        this.name = name
     }
+    accept(visitor){
+        return visitor.Statement(this)
+    }
+}
 
-    FunctionCall(node){
-        let bodyAST = node.name.accept(this)
-        //let argsToPass = //not passing arguments right now
-        return bodyAST.accept(this)
+export class Statements {
+    constructor(statements) {
+        this.statements = statements
     }
+    accept(visitor){
+        return visitor.Statements(this)
+    }
+}
 
-    Statement(node){
-        return node.name;
+export class IfStatement {
+    constructor(predicate, code, elseBlock) {
+        this.predicate = predicate
+        this.code = code
+        this.elseBlock = elseBlock
     }
-
-    IfStatement(node)
-    {
-        
+    accept(visitor){
+        return visitor.IfStatement(this)
     }
-    
 }
