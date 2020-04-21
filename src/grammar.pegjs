@@ -2,15 +2,12 @@
   const AST = options.AST
 }
 
-identifier
-  = identifier:[a-z][a-zA-Z_0-9]*
-  { return identifier; }
 
 ///////////////////////// blocks (lists of statements) /////////////////////////
 
 code
-  = code:(statement)
-  { return code; }
+  = statements: statement+
+  {return new AST.Statements(statements) }
 
 statement
   = "let" _ declr: variable_declaration
@@ -26,7 +23,7 @@ variable_declaration
   / variable_name
 
 variable_value             // as rvalue, should not be able to access a variable w/o let
-  = _ id:identifier _ 
+  = _ id:identifier _
   { return new AST.VariableValue(id); }
 
 variable_name              // as lvalue
@@ -36,12 +33,13 @@ variable_name              // as lvalue
 //////////////////////////////// if/then/else /////////////////////////////
 
 if_expression
-  = left:expr code:brace_block "else" else:brace_block
-  { 
-    console.log("left", left, "code", code, "else", else)
-    return new AST.IfStatement(left, code, else) }
-  / left:expr code:brace_block
-  { return new AST.IfStatement(left, code) }
+  = predicate:expr _ code:brace_block _ "else" _ elseBlock:brace_block
+  {
+    console.log("predicate", predicate, "code", code, "else", elseBlock)
+    return new AST.IfStatement(predicate, code, elseBlock)
+  }
+  / predicate:expr code:brace_block
+  { return new AST.IfStatement(predicate, code, new AST.Integer(0)) }
 
 //////////////////////////////// assignment /////////////////////////////
 
@@ -83,8 +81,8 @@ mult_term
   = _ head:primary _ rest:(_ mulop _ primary)* _
     { return rest.reduce(
             (result, [_, op, __, right]) => new AST.BinOp(result, op, right),
-            head 
-      )  
+            head
+      )
     }
 
 primary
@@ -99,7 +97,7 @@ integer
     { return new AST.Integer(number) }
 
 digits
-  = digits:[0-9]*
+  = digits:[0-9]+
   { return parseInt(digits.join(""), 10); }
 
 addop
@@ -135,6 +133,12 @@ brace_block
   { return code;}
 
 //////////////////// spacing /////////////////////////////
+
+
+identifier
+  = identifier:[a-z][a-zA-Z_0-9]*
+  { return identifier; }
+
 
 eol
   = [\n\r\u2028\u2029]

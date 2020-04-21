@@ -1,4 +1,9 @@
 // a Visitor on the AST
+
+function _bool(val) {
+    return val ? 1 : 0
+}
+
 export default class Interpreter {
 
     visit(ast) {
@@ -25,6 +30,8 @@ export default class Interpreter {
         }
     }
 
+
+
     visitRelOp(node) {
 
         let left = node.left.accept(this)
@@ -41,8 +48,8 @@ export default class Interpreter {
                 if(left >= right)
                     return true
             case">":
-                if(left > right)
-                    return true
+                return _bool(left > right)
+
             case"<=":
                 if(left <= right)
                     return true
@@ -52,7 +59,7 @@ export default class Interpreter {
         }
         return false;
     }
-    
+
     visitInteger(node) {
         return node.value
     }
@@ -93,7 +100,7 @@ export default class Interpreter {
         this.binding.get(lval)
     }
 
-    FunctionDefinition(node){ 
+    FunctionDefinition(node){
         return node.code
     }
 
@@ -103,13 +110,32 @@ export default class Interpreter {
         return bodyAST.accept(this)
     }
 
-    Statement(node){
-        return node.name;
+    Statements(node){
+        let value = 0
+
+        for(let statement of node.statements) {
+            value = statement.accept(this)
+        }
+
+        return value
     }
+
+    // AST IfStatement {
+    //     predicate: Integer { value: 1 },
+    //     code: Integer { value: 2 },
+    //     elseBlock: Integer { value: 3 }
+    //   }
 
     IfStatement(node)
     {
-        
+        let condition = node.predicate.accept(this)
+
+        if (condition) {
+            return  node.code.accept(this)
+        }
+        else {
+            return node.elseBlock.accept(this)
+        }
     }
-    
+
 }
