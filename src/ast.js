@@ -58,11 +58,12 @@ export class VariableValue {
 }
 
 export class FunctionDefinition {
-    constructor(name) {
-        this.name = name
+    constructor(formals, code){
+        this.formals = formals
+        this.code = code
     }
     accept(visitor){
-        return visitor.VariableValue(this)
+        return visitor.visitFunctionDefinition(this)
     }
 }
 
