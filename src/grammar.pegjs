@@ -2,7 +2,6 @@
   const AST = options.AST
 }
 
-
 ///////////////////////// blocks (lists of statements) /////////////////////////
 
 code
@@ -48,7 +47,6 @@ assignment
   { return new AST.Assignment(l,r); }
 
 //////////////////////////////// expression /////////////////////////////
-//func call, defn, if_expression, statemetns
 
 expr
   = "fn" _ expr:function_definition

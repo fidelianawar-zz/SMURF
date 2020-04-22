@@ -141,7 +141,7 @@ export default class Interpreter {
         }
     }
 
-    VariableDeclaraction(node){
+    VariableDeclaration(node){
         let variable = node.variable.accept(this)
         if(this.checkBinding(variable)){
             let expr = node.expr.accept(this)
