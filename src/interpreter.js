@@ -130,7 +130,7 @@ export default class Interpreter {
 
     VariableDeclaraction(node){
         if(this.binding.getVariable(node)){
-
+        
         }
     }
 
