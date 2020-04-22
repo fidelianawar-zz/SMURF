@@ -1,15 +1,29 @@
 // a Visitor on the AST
 
-constructor(target, printFunction){
-    this.target = target;
-    this.binding = new Map()
-}
-
 function _bool(val) {
     return val ? 1 : 0
 }
 
+function checkBinding(val) {
+    if(this.binding.has(val)){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
 export default class Interpreter {
+    constructor(target, printFunction){
+        this.target = target;
+        this.printFunction = printFunction;
+        this.binding = new Map()
+    }
+
+    visit(){
+        return this.target.accept(this)
+    }
 
     visit(ast) {
         return ast.accept(this)
@@ -62,15 +76,14 @@ export default class Interpreter {
         return node.value
     }
 
-    Assignment(node){ //check if variable is in binding, if it is someone can't assign to it
+    Assignment(node){ 
         let variable = node.variable.accept(this)
-        if(this.binding.has(variable)){
-            return this.binding.getVariable(variable);
-        }
-        else{
+        if(this.checkBinding(variable)){
             let expr = node.expr.accept(this)
             this.setVariable(variable, expr)
-            return expr
+        }
+        else{
+            return expr;
         }
     }
 
@@ -129,8 +142,13 @@ export default class Interpreter {
     }
 
     VariableDeclaraction(node){
-        if(this.binding.getVariable(node)){
-        
+        let variable = node.variable.accept(this)
+        if(this.checkBinding(variable)){
+            let expr = node.expr.accept(this)
+            this.setVariable(variable, expr)
+        }
+        else{
+            return expr;
         }
     }
 
