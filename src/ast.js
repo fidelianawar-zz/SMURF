@@ -65,7 +65,6 @@ export class FunctionDefinition {
         return visitor.VariableValue(this)
     }
 }
-//export const FunctionDefinition = makeNode("FunctionDefinition", "formals", "code")
 
 export class FunctionCall {
     constructor(name, args) {
@@ -99,7 +98,7 @@ export class IfStatement {
 
 export class VariableDeclaration {
     constructor(predicate, right) {
-        this.predicate = predicate
+        this.predicate = predicatedi
         this.right = right
     }
     accept(visitor){

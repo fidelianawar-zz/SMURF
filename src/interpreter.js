@@ -49,8 +49,6 @@ export default class Interpreter {
         }
     }
 
-
-
     visitRelOp(node) {
 
         let left = node.left.accept(this)
