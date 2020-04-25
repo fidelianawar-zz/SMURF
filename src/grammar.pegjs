@@ -2,24 +2,30 @@
   const AST = options.AST
 }
 
+start
+  = code
+
 ///////////////////////// blocks (lists of statements) /////////////////////////
 
 code
-  = statements: statement+
-  {return new AST.Statements(statements) }
+  = multiple_statements:(statement)+
+  { return new AST.Statements(multiple_statements) }
 
 statement
-  = "let" _ declr: variable_declaration
-  { return new AST.VariableDeclaration(declr)}
-  / assignment
-  / expr
+  = "let" __ declr_statement:variable_declaration _
+  { return declr; }
+  / assign_statement:assignment _ 
+  { return assign_statement; }
+  / expr_statement:expr _ 
+  { return expr_statement; }
 
 //////////////// variables & variable declaration /////////////////////////////
 
 variable_declaration
   = _ predicate:variable_name _ "=" _ right:expr
   { return new AST.VariableDeclaration(predicate,right); }
-  / variable_name
+  / predicate: variable_name 
+  { return new AST.VariableDeclaration(predicate, new AST.Integer(0))}
 
 variable_value             // as rvalue, should not be able to access a variable w/o let
   = _ id:identifier _
@@ -34,7 +40,6 @@ variable_name              // as lvalue
 if_expression
   = predicate:expr _ code:brace_block _ "else" _ elseBlock:brace_block
   {
-    console.log("predicate", predicate, "code", code, "else", elseBlock)
     return new AST.IfStatement(predicate, code, elseBlock)
   }
   / predicate:expr code:brace_block
@@ -49,11 +54,13 @@ assignment
 //////////////////////////////// expression /////////////////////////////
 
 expr
-  = "fn" _ expr:function_definition
+  = _ "fn" __ expr:function_definition
   { return expr; }
-  / "if" _ ifExpr: if_expression { return ifExpr; }
+  / _ "if" __ ifExpr: if_expression 
+  { return ifExpr; }
   / boolean_expression
   / arithmetic_expression
+  / function_call
 
 /////////////////////// boolean expression /////////////////////////////
 

@@ -13,7 +13,6 @@ function checkBinding(val) {
     }
 }
 
-
 export default class Interpreter {
     constructor(target, printFunction){
         this.target = target;
@@ -101,7 +100,7 @@ export default class Interpreter {
 
     getVariable(name){
         let lval = name
-        this.binding.get(lval)
+        return this.binding.get(lval)
     }
 
     FunctionDefinition(node){
