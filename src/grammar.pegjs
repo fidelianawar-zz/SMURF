@@ -13,10 +13,10 @@ code
 
 statement
   = "let" __ declr_statement:variable_declaration _
-  { return declr; }
-  / assign_statement:assignment _ 
+  { return declr_statement; }
+  / assign_statement:assignment _
   { return assign_statement; }
-  / expr_statement:expr _ 
+  / expr_statement:expr _
   { return expr_statement; }
 
 //////////////// variables & variable declaration /////////////////////////////
@@ -24,7 +24,7 @@ statement
 variable_declaration
   = _ predicate:variable_name _ "=" _ right:expr
   { return new AST.VariableDeclaration(predicate,right); }
-  / predicate: variable_name 
+  / predicate: variable_name
   { return new AST.VariableDeclaration(predicate, new AST.Integer(0))}
 
 variable_value             // as rvalue, should not be able to access a variable w/o let
@@ -56,7 +56,7 @@ assignment
 expr
   = _ "fn" __ expr:function_definition
   { return expr; }
-  / _ "if" __ ifExpr: if_expression 
+  / _ "if" __ ifExpr: if_expression
   { return ifExpr; }
   / boolean_expression
   / arithmetic_expression

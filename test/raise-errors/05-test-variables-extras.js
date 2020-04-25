@@ -1,16 +1,9 @@
 import test from "ava"
-import loadGrammar from "../src/util/load_grammar.js"
-import compileAndRun from "../src/compiler.js"
+import loadGrammar from "../../src/util/load_grammar.js"
+import compileAndRun from "../../src/compiler.js"
 
 const tests = [
-  ["1 2 3", 3],
-  ["1+2 3*4", 12],
-  [`123
-     if (1) {
-      678
-     }`,
-    678
-  ]
+  ["a", "should raise error—not defined"],
 ]
 
 

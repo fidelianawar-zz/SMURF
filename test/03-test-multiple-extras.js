@@ -3,14 +3,33 @@ import loadGrammar from "../src/util/load_grammar.js"
 import compileAndRun from "../src/compiler.js"
 
 const tests = [
-  ["1 2 3", 3],
-  ["1+2 3*4", 12],
   [`123
      if (1) {
-      678
+      6
+      7 8
      }`,
-    678
-  ]
+    8
+  ],
+  [`123
+     if (1) {
+      6
+      7 8
+     }
+     456`,
+    456
+  ],
+  [`123
+  if (0) {
+   6
+   7
+  }
+  else {
+    8 9
+  }
+  `,
+ 9
+]
+
 ]
 
 

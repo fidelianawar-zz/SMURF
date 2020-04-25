@@ -99,7 +99,7 @@ export class IfStatement {
 
 export class VariableDeclaration {
     constructor(predicate, right) {
-        this.predicate = predicatedi
+        this.predicate = predicate
         this.right = right
     }
     accept(visitor){

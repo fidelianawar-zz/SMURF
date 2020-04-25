@@ -3,14 +3,17 @@ import loadGrammar from "../src/util/load_grammar.js"
 import compileAndRun from "../src/compiler.js"
 
 const tests = [
-  ["1 2 3", 3],
-  ["1+2 3*4", 12],
-  [`123
-     if (1) {
-      678
-     }`,
-    678
-  ]
+  [`let a=fn (){99}
+     a()`, 99
+  ],
+  [`let a = fn () { 99 }
+     let b = fn(){a()+1}
+     a() + b()`, 199
+  ],
+  [`let a = fn(){fn(){123}}
+     let b = a()
+     b()`, 123
+  ],
 ]
 
 
