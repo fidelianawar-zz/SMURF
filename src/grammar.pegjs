@@ -1,155 +1,161 @@
 {
   const AST = options.AST
+
+  function rollupBinOp(head, rest) {
+    return rest.reduce(
+      (result, [op, right]) => new AST.BinOp(result, op, right),
+      head
+    )
+  }
 }
 
 start
   = code
 
-///////////////////////// blocks (lists of statements) /////////////////////////
+///////////////////////// blocks (lists of staements) /////////////////////////
 
 code
-  = multiple_statements:(statement)+
-  { return new AST.Statements(multiple_statements) }
+  = stmts:statementWithOptionalLeadingSpaces* _
+    { return new AST.StatementList(stmts) }
+
+statementWithOptionalLeadingSpaces
+  = _ s:statement { return s }
 
 statement
-  = "let" __ declr_statement:variable_declaration _
-  { return declr; }
-  / assign_statement:assignment _ 
-  { return assign_statement; }
-  / expr_statement:expr _ 
-  { return expr_statement; }
+  = "let" __ decl:variable_declaration
+    { return decl }
+  / assignment
+  / expr
 
-//////////////// variables & variable declaration /////////////////////////////
+//////////////////////////////// variables & variable declaration /////////////////////////////
 
 variable_declaration
-  = _ predicate:variable_name _ "=" _ right:expr
-  { return new AST.VariableDeclaration(predicate,right); }
-  / predicate: variable_name 
-  { return new AST.VariableDeclaration(predicate, new AST.Integer(0))}
+  = name:variable_name _ "=" _ expr:expr
+    { return new AST.VariableDeclaration(name, expr) }
+  / name:variable_name
+    { return new AST.VariableDeclaration(name, null) }
 
-variable_value             // as rvalue, should not be able to access a variable w/o let
-  = _ id:identifier _
-  { return new AST.VariableValue(id); }
+variable_value                // as rvalue
+  =  id:identifier
+     { return new AST.VariableValue(id) }
 
-variable_name              // as lvalue
-  = _ id:identifier _
-  { return new AST.VariableName(id); }
+variable_name                 // as lvalue
+  =  id:identifier
+     { return new AST.VariableName(id) }
+
 
 //////////////////////////////// if/then/else /////////////////////////////
 
 if_expression
-  = predicate:expr _ code:brace_block _ "else" _ elseBlock:brace_block
-  {
-    return new AST.IfStatement(predicate, code, elseBlock)
-  }
-  / predicate:expr code:brace_block
-  { return new AST.IfStatement(predicate, code, new AST.Integer(0)) }
+  = expr:expr _ thenCode:brace_block _ "else" _ elseCode:brace_block
+    {
+      return new AST.IfStatement(expr, thenCode, elseCode)
+    }
+  /  expr:expr _ thenCode:brace_block
+    {
+      return new AST.IfStatement(expr,
+                                 thenCode,
+                                 new AST.IntegerValue(0))
+    }
+
 
 //////////////////////////////// assignment /////////////////////////////
 
 assignment
   = l:variable_name _ "=" _ r:expr
-  { return new AST.Assignment(l,r); }
+    { return new AST.Assignment(l, r) }
+
 
 //////////////////////////////// expression /////////////////////////////
 
 expr
-  = _ "fn" __ expr:function_definition
-  { return expr; }
-  / _ "if" __ ifExpr: if_expression 
-  { return ifExpr; }
+  = "fn" _ fndef:function_definition
+    { return fndef }
+  / "if" _ ifExpr:if_expression
+    { return ifExpr }
   / boolean_expression
-  / arithmetic_expression
-  / function_call
+  / arithmentic_expression
 
-/////////////////////// boolean expression /////////////////////////////
+
+//////////////////////////////// boolean expression /////////////////////////////
 
 boolean_expression
-  = _ head:arithmetic_expression rest:(relop _ arithmetic_expression)* _
-    { return rest.reduce(
-        (result, [op, _, right]) => new AST.RelOp(result, op, right),
-        head
-      )
-    }
+  = l:arithmentic_expression _ op:relop _ r:arithmentic_expression
+    { return new AST.BinOp(l, op, r) }
 
-//////////////////// arithmetic expression /////////////////////////////
+//////////////////////////////// arithmetic expression /////////////////////////////
 
-arithmetic_expression
-  = _ head:mult_term _ rest:(addop _ mult_term)* _
-    { return rest.reduce(
-            (result, [op, _, right]) => new AST.BinOp(result, op, right),
-            head
-      )
-    }
+//////////////////////////////// arithmetic expression /////////////////////////////
+
+arithmentic_expression
+  = head:mult_term rest:(addop mult_term)*
+    { return rollupBinOp(head, rest) }
 
 mult_term
-  = _ head:primary _ rest:(_ mulop _ primary)* _
-    { return rest.reduce(
-            (result, [_, op, __, right]) => new AST.BinOp(result, op, right),
-            head
-      )
-    }
+  = head:primary rest:(mulop primary)*
+    { return rollupBinOp(head, rest) }
 
 primary
-  = _ "(" _ expr:arithmetic_expression _ ")" _
-    { return expr; }
-  / integer / function_call / variable_value
+  = integer
+  / function_call
+  / _ v:variable_value _
+    { return v }
+  / _ "(" _ expr:arithmentic_expression _ ")" _
+    { return expr }
+
 
 integer
-  = "-" number:digits
-    { return new AST.Integer(-number) }
-  / "+"? number:digits
-    { return new AST.Integer(number) }
-
-digits
-  = digits:[0-9]+
-  { return parseInt(digits.join(""), 10); }
+  = _ number: digits _
+    { return new AST.IntegerValue(number) }
 
 addop
-  = op:( "+" / "-" )
-  { return op; }
+  = _ op:[-+] _
+    { return op }
 
 mulop
-  = op:(  "*" / "/"  )
-  { return op; }
+  = _ op:[*/] _
+    { return op }
 
 relop
-  = op:('==' / '!=' / '>=' / '>' / '<=' / '<')
-    { return op; }
+  = '==' / '!=' / '>=' / '>' / '<=' / '<'
+
 
 //////////////////////////////// function call /////////////////////////////
 
 function_call
-  = name:variable_value "(" _ ")"     // note: no parameters
-  { return new AST.FunctionCall(name,args); }
+  = 'print' _ '(' _ args:call_arguments _ ')'
+    { return new AST.InternalPrint(args) }
 
-//////////////////////// function definition /////////////////////////////
+  / name:variable_value "(" _ args:call_arguments _ ")"
+    { return new AST.FunctionCall(name, args) }
+
+call_arguments
+  = ''
+    { return [] }
+
+//////////////////////////////// function definition /////////////////////////////
 
 function_definition
   = params:param_list _ code:brace_block
-  { return new AST.FunctionDefinition(params,code) }
+    { return new AST.FunctionDefinition(params, code) }
 
 param_list
-   = "(" ")"
-   { return; }
+   = "(" _ ")" { return [] }
 
 brace_block
-  = "{" code:code "}"
-  { return code;}
-
-//////////////////// spacing /////////////////////////////
+  = "{" _ code:code _ "}" { return code }
 
 
-identifier
-  = identifier:[a-z][a-zA-Z_0-9]*
-  { return identifier; }
+/////////////////////// utility NTs //////////////////////////////
 
+eol "end-of-line" = [\n\r\u2028\u2029]
+ws "whitespace"   = [ \t] / eol
+comment           = "#" (!eol .)*
+_                 = ( ws / comment )*
+__                = ( ws / comment )+
 
-eol
-  = [\n\r\u2028\u2029]
-space
-  = [ \t\n\r]
-_
-  = (space)*
-__
-  = (space)+
+identifier        = id:([a-z][a-zA-Z_0-9]*)
+                    { return text() }
+
+digits            = [-+]? [0-9]+
+                    { return parseInt(text(), 10) }

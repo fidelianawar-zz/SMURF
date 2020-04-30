@@ -23,7 +23,7 @@ let script = process.argv[2]
 if (script.endsWith(".smu")) {
   script = fs.readFileSync(script, "utf-8")
 }
-console.log('here')
+
 compileAndRun(grammar, script, printFunction)
 
  ////////////////////////////////////////////////////////

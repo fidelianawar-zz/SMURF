@@ -11,8 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ava": "^3.7.0",
-    "fs": "0.0.1-security",
+    "ava": "^3.5.1",
     "pegjs": "^0.10.0"
   }
 }

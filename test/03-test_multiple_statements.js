@@ -10,8 +10,35 @@ const tests = [
       678
      }`,
     678
+  ],
+  [`123
+  if (1) {
+   6
+   7 8
+  }`,
+    8
+  ],
+  [`123
+  if (1) {
+   6
+   7 8
+  }
+  456`,
+    456
+  ],
+  [`123
+   if (0) {
+    6
+    7
+   }
+   else {
+    8 9
+   }
+  `,
+    9
   ]
 ]
+
 
 let grammar = loadGrammar()
 let dummyPrint = () => { throw ("shouldn't call this") }
