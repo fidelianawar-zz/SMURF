@@ -1,9 +1,26 @@
 export default class Binding {
   constructor() {
 
-    //objects of this class will contain a map of variable names/values
-    this.binding = new Map()
-  
+    //top-level binding
+    if(this.binding == null){
+      this.binding = new Map()
+      //how is parent being passed?
+    }
+    
+    else{
+      //remember parent
+    }
+
+  }
+
+  //new Binding who's parent is this binding
+  push(){
+    return new Binding(this);
+  }
+
+  //inside child binding, return parent of this binding
+  pop(){
+    return this.binding;
   }
 
   getVariableValue(name) {
