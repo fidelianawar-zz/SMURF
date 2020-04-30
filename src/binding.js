@@ -1,6 +1,9 @@
 export default class Binding {
   constructor() {
+
+    //objects of this class will contain a map of variable names/values
     this.binding = new Map()
+  
   }
 
   getVariableValue(name) {
