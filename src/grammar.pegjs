@@ -127,7 +127,7 @@ function_call
     { return new AST.FunctionCall(name, args) }
 
 call_arguments
-  = args: ((",")? _ expr)+
+  = args: ((comma)? _ expr)+
     { return args }
   / '' { return [] }
 
