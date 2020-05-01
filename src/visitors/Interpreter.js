@@ -18,6 +18,7 @@ const operations = {
 }
 
 import Binding from "../binding.js"
+import * as AST from "../ast.js"
 
 export default class Interpreter {
 
@@ -46,42 +47,47 @@ export default class Interpreter {
 
   FunctionCall(node) {
 
-    let thunk = node.name.accept(this) //how does this store the binding?
-  
-    //create array of same size as node.args
-    var argumentList = new Array(node.args.length);
+    let thunk = node.name.accept(this)
+    let thunkBinding = thunk.binding.push()
 
-    //verify same length as formals
-    if(argumentList.length != node.formals.length){
-      console.log("There are not the same number of arguments");
-      return;
+    if (node.args.length > 0) { //there are arguments
+      if (thunk.formals.length != node.args.length) {
+        throw new Error("There are not the same number of arguments")
+      }
+
+      //convert params into list
+      thunk.formals.forEach((param, i) => {
+        thunk.formals[i] = param[2].accept(this)
+      })
+ 
+      //convert node.args into a list of values
+      node.args.forEach((argument, i) => {
+        node.args[i] = argument[2].accept(this) //arg[2] is the argument w/o comma & _
+      })
+
+      //set new binding for each variable
+      thunk.formals.forEach((formal,i) => {
+        thunkBinding.setVariable(formal, node.args[i])
+      })
     }
-    
-    //convert node.args into a list of values
-    for(var i = 0; i < argumentList.length; ++i) {
 
-      //is this the same as node.args.getVariableValue?
-      argumentList[i] = node.args[i].accept(this); //visit back each of args to evaluate it
-      this.binding = thunk.binding();
-      setVariable(node.args[i].name, argumentList[i]);
-    
+    this.binding = thunkBinding
+    let thunkCode = thunk.code.accept(this)
+
+    while (this.binding.parent != null) {
+      this.binding = this.binding.pop() //go "up" the tree of binding
     }
-  }
 
-  Thunk(node){
-    console.log("inside thunk AST")
-    let thunk = node.binding.accept(this)
-    let value = getVariableValue(thunk)
-    return value
+    return thunkCode
+
   }
 
   FunctionDefinition(node) {
-    //return node.code
     return new AST.Thunk(node.formals, node.code, this.binding)
   }
 
   IfStatement(node) {
-
+    
     let predicate = bool(node.predicate.accept(this))
     let elseCode = node.elseCode.accept(this)
     
@@ -101,7 +107,7 @@ export default class Interpreter {
   }
 
   InternalPrint(node) {
-    let args = node.args.map(a => a.accept(this).toString() )
+    let args = node.args.map(a => a[2].accept(this).toString() )
     this.printFunction(args)
     return args
   }
