@@ -47,7 +47,7 @@ export default class Interpreter {
   FunctionCall(node) {
 
     let thunk = node.name.accept(this) //how does this store the binding?
-
+  
     //create array of same size as node.args
     var argumentList = new Array(node.args.length);
 
@@ -62,7 +62,7 @@ export default class Interpreter {
 
       //is this the same as node.args.getVariableValue?
       argumentList[i] = node.args[i].accept(this); //visit back each of args to evaluate it
-      this.binding = new Binding();
+      this.binding = thunk.binding();
       setVariable(node.args[i].name, argumentList[i]);
     
     }

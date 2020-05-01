@@ -13,7 +13,7 @@ export default class Binding {
 
   }
 
-  //new Binding who's parent is this binding
+  //creates new Binding who's parent is this binding
   push(){
     return new Binding(this);
   }
@@ -21,6 +21,11 @@ export default class Binding {
   //inside child binding, return parent of this binding
   pop(){
     return this.binding;
+  }
+
+  declareVariable(name, value){
+    this.binding.name = name;
+    this.binding.value = value;
   }
 
   getVariableValue(name) {
