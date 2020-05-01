@@ -68,15 +68,30 @@ export default class Interpreter {
     }
   }
 
+  Thunk(node){
+    console.log("inside thunk AST")
+    let thunk = node.binding.accept(this)
+    let value = getVariableValue(thunk)
+    return value
+  }
+
   FunctionDefinition(node) {
+    //return node.code
     return new AST.Thunk(node.formals, node.code, this.binding)
   }
 
   IfStatement(node) {
-    let predicate = bool(node.predicate.accept(this))
 
-    if (predicate == 1)
+    let predicate = bool(node.predicate.accept(this))
+    let elseCode = node.elseCode.accept(this)
+    
+    if (predicate == 1){
       return node.thenCode.accept(this)
+    }
+    
+    if(elseCode == null && predicate == 0){
+      return 0;
+    }
 
     return node.elseCode.accept(this)
   }
