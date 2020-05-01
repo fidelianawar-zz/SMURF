@@ -51,6 +51,8 @@ export default class Interpreter {
     let thunkBinding = thunk.binding.push()
 
     if (node.args.length > 0) { //there are arguments
+
+      //check to see if params length is = to argument length
       if (thunk.formals.length != node.args.length) {
         throw new Error("There are not the same number of arguments")
       }
@@ -87,7 +89,7 @@ export default class Interpreter {
   }
 
   IfStatement(node) {
-    
+
     let predicate = bool(node.predicate.accept(this))
     let elseCode = node.elseCode.accept(this)
     
@@ -95,6 +97,7 @@ export default class Interpreter {
       return node.thenCode.accept(this)
     }
     
+    //if statement with no else clause and if statement is false, return 0
     if(elseCode == null && predicate == 0){
       return 0;
     }
