@@ -61,7 +61,7 @@ export default class Interpreter {
       thunk.formals.forEach((param, i) => {
         thunk.formals[i] = param[2].accept(this)
       })
- 
+    
       //convert node.args into a list of values
       node.args.forEach((argument, i) => {
         node.args[i] = argument[2].accept(this) //arg[2] is the argument w/o comma & _
@@ -101,7 +101,6 @@ export default class Interpreter {
     if(elseCode == null && predicate == 0){
       return 0;
     }
-
     return node.elseCode.accept(this)
   }
 

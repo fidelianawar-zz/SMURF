@@ -58,7 +58,4 @@ export default class Binding {
     }
     throw new Error("The variable does not exist in binding")
   }
-
-  
-
 }
